@@ -2,12 +2,16 @@ clear
 close all
 clc
 
+%inicijalizacija konstanti sistema
+
 kw = 10^-14;
 Ca = 10^-6;
 Cb = 10^-6;
 V = 30;
 Fa = 0.016667;
 y_e = 7;
+
+%% Odredjivanje ravnoteznih stanja
 
 
 syms x1 x2 u
@@ -52,7 +56,7 @@ margin(G);
 figure
 bode(G);
 
-%% Teswtiranje sistema u otvorenoj sprezi
+%% Testiranje sistema u otvorenoj sprezi
 
 
 Ca = 10^-6;
@@ -86,7 +90,8 @@ end
 %% Projektovanje kontrolera na bazi inverzije dinamike
 Ca = 10^-6;
 
+K = 10000000;
 sim('projekat1zatvorenasprega.slx');
 figure
-plot(y)
-
+plot(tout, y)`
+ylim([6 8])
