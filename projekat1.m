@@ -90,8 +90,52 @@ end
 %% Projektovanje kontrolera na bazi inverzije dinamike
 Ca = 10^-6;
 
-K = 10000000;
+K = 10;
+Ti =  65.1485;
+Tt = Ti;
 sim('projekat1zatvorenasprega.slx');
 figure
 plot(tout, y)
 ylim([6 8])
+figure
+plot(tout, u)
+
+%% Testiranje robusnosti PI kontrolera na bazi inverzije dinamike
+
+figure
+hold on
+koncentracije = [0.8*Ca 0.9*Ca Ca 1.1*Ca 1.2*Ca];
+
+for i = 1 : 5
+    Ca = koncentracije(i);
+    sim('projekat1zatvorenasprega.slx');
+    plot(tout, y)
+end
+legend('80%Ca','90%Ca','Ca','110%Ca','120%Ca')
+Ca = 10^-6;
+
+%% Testiranje otpornosti na sum
+
+K = 0.01;
+Ti = 65.1485;
+Tt = 0.1*Ti;
+figure
+sim('projekat1zatvorenasprega.slx');
+plot(tout, y)
+ylim([6 8])
+figure
+plot(tout, u)
+
+%% PID regulacija
+
+% sim('projekat1_PID_inicijalizacija.slx')
+% figure
+% plot(out.tout, out.y_ZN)
+% hold all
+% 
+% [N, Npos] = max(yd_ZN(10001 : end));
+% ya = y_ZN()
+% figure
+% plot(out.tout, out.yd_ZN)
+
+
