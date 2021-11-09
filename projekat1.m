@@ -93,5 +93,5 @@ Ca = 10^-6;
 K = 10000000;
 sim('projekat1zatvorenasprega.slx');
 figure
-plot(tout, y)`
+plot(tout, y)
 ylim([6 8])
