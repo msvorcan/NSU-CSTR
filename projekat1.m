@@ -18,15 +18,7 @@ syms x1 x2 u
 x1dot = Fa/V * (Ca - x1) - 1 / V* x1 * u;
 x2dot = -Fa/V * x2 + 1/V * (Cb - x2) * u;
 y = -log10(sqrt((x2-x1)^2 / 4 + kw) - (x2 - x1) / 2);
-% [x1e,x2e] = solve([x1dot==0,x2dot==0],[x1,x2]);
-% x1 = x1e;
-% x2 = x2e;
-% pom = eval(y);
-% ue = solve(pom == y_e,u);
-% ue = eval(ue);
-% u = ue;
-% x1e = eval(x1e);
-% x2e = eval(x2e);
+
 [x1e,x2e,ue] = solve([x1dot==0,x2dot==0,y==y_e],[x1,x2,u]);
 x1e = eval(x1e);
 x2e = eval(x2e);
@@ -117,8 +109,7 @@ Ca = 10^-6;
 %% Testiranje otpornosti na sum
 
 K = 0.01;
-Ti = 65.1485;
-Tt = 0.1*Ti;
+Tt = 3 * Ti;
 figure
 sim('projekat1zatvorenasprega.slx');
 plot(tout, y)
@@ -128,14 +119,20 @@ plot(tout, u)
 
 %% PID regulacija
 
-% sim('projekat1_PID_inicijalizacija.slx')
-% figure
-% plot(out.tout, out.y_ZN)
-% hold all
-% 
-% [N, Npos] = max(yd_ZN(10001 : end));
-% ya = y_ZN()
-% figure
-% plot(out.tout, out.yd_ZN)
+%sim('projekat1_PID_init.slx')
+figure
+plot(out.tout, out.y_ZN)
+hold all
 
+pom = ones(1, length(xa));
+plot(xa, 7*pom)
+plot(xa, 7.10245*pom)
+xlim([49500 51000])
+ylim([6.9 7.15])
+
+[N, Npos] = max(out.yd_ZN(50001 : end));
+xa = 0 : 0.1 : 100000;
+ya = out.y_ZN(50000 + Npos) + N * (xa - (50000 + Npos) * 0.1);
+plot(xa, ya)
+%xlim([9000 15000])
 
