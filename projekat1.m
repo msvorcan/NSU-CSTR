@@ -24,7 +24,7 @@ x1e = eval(x1e);
 x2e = eval(x2e);
 uep = eval (ue);
 
-%% Provera stabilnosti rs , i linearizacija
+%% Provera stabilnosti R.S. i linearizacija
 
 syms x1 x2 u
 x1dot = Fa/V * (Ca - x1) - 1 / V* x1 * u;
