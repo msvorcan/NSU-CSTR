@@ -24,7 +24,7 @@ x1e = eval(x1e);
 x2e = eval(x2e);
 uep = eval (ue);
 
-%% Provera stabilnosti rs , i linearizacija
+%% Provera stabilnosti R.S. i linearizacija
 
 syms x1 x2 u
 x1dot = Fa/V * (Ca - x1) - 1 / V* x1 * u;
@@ -52,7 +52,6 @@ bode(G);
 
 
 Ca = 10^-6;
-%for pom = 1:2 
     sim('projekat1zatvorenasprega.slx');
     figure
     subplot(2,1,1)
@@ -82,9 +81,8 @@ Ca = 10^-6;
     xlabel('koncentracija kiseline[mol/l]')
     ylabel('koncentracija baze[mol/l]')
     title('fazorska ravan')
-%end
-%%
-pom = 1;
+    
+%% Provera robusnosti sistema za parametar Ca u otvorenoj sprezi
 figure(1)
 hold all
 for pom1 = 0.8:0.1:1.2 
@@ -215,7 +213,7 @@ title('Testiranje robusnosti upravljanja')
 
 legend('80%Ca','90%Ca','Ca','110%Ca','120%Ca')
 Ca = 10^-6;
-%%
+
 for pom1 = 0.8:0.1:1.2 
     Ca = pom1*10^-6;
     out1 = sim('projekat1zatvorenasprega.slx');
@@ -254,11 +252,7 @@ plot(tout, u)
 %% PID regulacija
 
 out = sim('projekat1_PID_init.slx');
-% figure
-% plot(out.t,out.yd_ZN)
-% figure
-% plot(out.tout, out.y_ZN)
-% hold all
+
 du = uep;
 dy = out.y_ZN(end) -7;
 pomtau = out.y_ZN > (0.1*dy + 7);
@@ -269,20 +263,7 @@ k = k-1000000;
 p = p-1000000;
 tau = k / 1000;
 T = (p-k)/1000;
-% [N, Npos] = max(out.yd_ZN(1000001 : end));
-% xa = 0 : 0.001 : 5000;
-% ya = out.y_ZN(1000000 + Npos) + N * (xa - (1000000 + Npos) * 0.001);
-% plot(xa, ya)
-% 
-% pom = ones(1, length(xa));
-% plot(xa, 7*pom)
-% plot(xa, out.y_ZN(end)*pom)
-% % xlim([49500 51000])
-% % ylim([6.9 7.15])
-% Tp = 1841.3865 - 1000;
-% tau = 0.001;
-% 
-%xlim([9000 15000])
+
 mi=0.4;
 
 
@@ -295,7 +276,97 @@ Tt = 0.01*Ti
 
 out = sim('PID_nova_metoda.slx');
 figure
-plot(tout, y)
+plot(t, y)
 ylim([6 8])
 figure
-plot(tout, u)
+plot(t, u)
+
+out = sim('PID_nova_metoda.slx');
+    figure
+    subplot(2,1,1)
+    plot(t, u)
+    xlabel('vreme[s]')
+    ylabel('protok baze[1/s]')
+    title('upravljanje')
+    %xlim([0 1000])
+    subplot(2,1,2)
+    plot(t, y)
+    ylim([6 8])
+    %xlim([0 1000])
+    xlabel('vreme[s]')
+    ylabel('PH vrednost')
+    title('izlaz sistema')
+    figure
+    subplot(3,1,1)
+    plot(t,x1)
+    xlabel('vreme[s]')
+    ylabel('koncentracija kiseline[mol/l]')
+    title('promenljiva stanja x1')
+    subplot(3,1,2)
+    plot(t, x2)
+    xlabel('vreme[s]')
+    ylabel('koncentracija baze[mol/l]')
+    title('promenljiva stanja x2')
+    subplot(3,1,3)
+    plot(x1, x2)
+    xlabel('koncentracija kiseline[mol/l]')
+    ylabel('koncentracija baze[mol/l]')
+    title('fazorska ravan')
+
+%% Testiranje robusnosti PI kontrolera na bazi odskocnog odziva
+
+figure
+hold on
+koncentracije = [0.8*Ca 0.9*Ca Ca 1.1*Ca 1.2*Ca];
+
+for i = 1 : 5
+    Ca = koncentracije(i);
+    sim('PID_nova_metoda.slx');
+    plot(tout, y)
+end
+legend('80%Ca','90%Ca','Ca','110%Ca','120%Ca')
+xlabel('t[s]')
+ylabel('pH vrednost')
+title('Testiranje robusnosti izlaza')
+
+Ca = 10^-6;
+figure
+hold on
+koncentracije = [0.8*Ca 0.9*Ca Ca 1.1*Ca 1.2*Ca];
+
+for i = 1 : 5
+    Ca = koncentracije(i);
+    sim('PID_nova_metoda.slx');
+    plot(tout, u)
+end
+
+xlabel('t[s]')
+ylabel('protok baze[l/s]')
+title('Testiranje robusnosti upravljanja')
+
+legend('80%Ca','90%Ca','Ca','110%Ca','120%Ca')
+Ca = 10^-6;
+
+for pom1 = 0.8:0.1:1.2 
+    Ca = pom1*10^-6;
+    out1 = sim('PID_nova_metoda.slx');
+    subplot(3,1,1)
+    hold all
+    plot(t, x1)
+    xlabel('vreme[s]')
+    ylabel('koncentracija kiseline[mol/l]')
+    title('promenljiva stanja x1')
+    subplot(3,1,2)
+    hold all
+    plot(t, x2)
+    xlabel('vreme[s]')
+    ylabel('koncentracija baze[mol/l]')
+    title('promenljiva stanja x2')
+    subplot(3,1,3)
+    hold all
+    plot(x1, x2)
+    xlabel('koncentracija kiseline[mol/l]')
+    ylabel('koncentracija baze[mol/l]')
+    title('fazorska ravan')
+ end
+legend('80%Ca','90%Ca','Ca','110%Ca','120%Ca')
